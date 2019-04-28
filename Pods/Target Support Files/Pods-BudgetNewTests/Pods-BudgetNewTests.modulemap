@@ -1,0 +1,6 @@
+framework module Pods_BudgetNewTests {
+  umbrella header "Pods-BudgetNewTests-umbrella.h"
+
+  export *
+  module * { export * }
+}
