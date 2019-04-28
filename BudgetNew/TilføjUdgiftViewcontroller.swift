@@ -235,6 +235,7 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
         //        let subBudgetPart = expenseSubBudget!.components(separatedBy: " ")
         //        let subBudget = subBudgetPart[1]
         let expenseSubBudgetKeyID = subBudgets[categoryPicker.selectedRow(inComponent: 0)].getKeyID()
+        let expenseAmount = Int(amountText.text!)!
         let subbudgetIndex = self.subBudgets.firstIndex(where: {$0.getKeyID() == expenseSubBudgetKeyID})
         self.ref = self.db.collection("Budget/\(self.budget.getKeyID())/Expenses").addDocument(data: [
             "Name": nameText.text!,
@@ -243,15 +244,15 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
             "SubBudgetKeyID": expenseSubBudgetKeyID
         ])
         
-        let previousSpent = self.subBudgets[subbudgetIndex!].getMoneySpent()
-        let updatedSpent = self.subBudgets[subbudgetIndex!].getMoneySpent() + Int(amountText.text!)!
+        //let previousSpent = self.subBudgets[subbudgetIndex!].getMoneySpent()
+        let updatedSpent = self.subBudgets[subbudgetIndex!].getMoneySpent() + expenseAmount
         
         self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").document(self.subBudgets[subbudgetIndex!].getKeyID()).updateData(["Name" : self.subBudgets[subbudgetIndex!].getSubBudgetName(), "Symbol" : self.subBudgets[subbudgetIndex!].getSymbol(), "MoneyLeft" : self.subBudgets[subbudgetIndex!].getMoneyTotal() - updatedSpent, "MoneySpent" : updatedSpent, "MoneyTotal" : self.subBudgets[subbudgetIndex!].getMoneyTotal()])
         
-        let updatedLeft1 = self.budget.getMoneyLeft() + previousSpent
-        let updatedLeft2 = updatedLeft1 - updatedSpent
+        let updatedLeft = self.budget.getMoneyLeft() - expenseAmount
+        //let updatedLeft2 = updatedLeft - updatedSpent
         
-        self.db.collection("Budget").document(self.budget.getKeyID()).updateData(["Name" : self.budget.getBudgetName(), "MoneyLeft" : updatedLeft2, "MoneyTotal" : self.budget.getMoneyTotal()])
+        self.db.collection("Budget").document(self.budget.getKeyID()).updateData(["Name" : self.budget.getBudgetName(), "MoneyLeft" : updatedLeft, "MoneyTotal" : self.budget.getMoneyTotal()])
         { err in
             if err != nil {
                 //print("Error adding document: \(err)")
