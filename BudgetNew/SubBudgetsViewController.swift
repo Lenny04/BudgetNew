@@ -14,14 +14,14 @@ import FirebaseFirestore
 class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UIPickerViewDelegate, UIPickerViewDataSource, UISearchBarDelegate {
     var ref: DocumentReference!
     lazy var db = Firestore.firestore()
-    var quoteListener: ListenerRegistration!
-    var quoteListener2: ListenerRegistration!
-    var expenses = [Expense]()
+    var quoteListenerExpenses: ListenerRegistration!
+    var quoteListenerSubBudgets: ListenerRegistration!
     @IBOutlet var tableView: UITableView!
     @IBOutlet weak var searchbar: UISearchBar!
     var budget = Budget(budgetName: "", keyID: "", moneyLeft: 0, moneyTotal: 0)
     var subBudget = SubBudget(subBudgetName: "", keyID: "", symbol: "", moneyLeft: 0, moneySpent: 0, moneyTotal: 0)
-    var subBudgetDetails = [String](), subBudgetExpenses = [Expense](), filteredExpenses = [Expense](), subBudgets = [SubBudget]()
+    var subBudgetDetails = [String](), subBudgetExpenses = [Expense](), filteredExpenses = [Expense](), subBudgets = [SubBudget](),
+    expenses = [Expense]()
     var twoDimensionArray = [[AnyObject]]()
     var currentIndex = 0
     var categoriesPickerView = UIPickerView(), datePicker = UIDatePicker()
@@ -36,8 +36,12 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
         let settings = db.settings
         settings.areTimestampsInSnapshotsEnabled = true
         db.settings = settings
+        
+        // Tableview settings
         tableView.delegate = self
         tableView.dataSource = self
+        
+        // Category pickerview settings
         categoriesPickerView.delegate = self
         categoriesPickerView.dataSource = self
         categoriesPickerView.tag = 1
@@ -46,17 +50,22 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
         categoriesCancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(SubBudgetsViewController.subTappedToolBarBtn))
         categoriesDoneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(SubBudgetsViewController.subDonePressed))
         flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
+        
+        // Date pickerview settings
         datePicker.tag = 2
         //datePicker.addTarget(self, action: #selector(SubBudgetsViewController.datePickerValueChanged), for: UIControl.Event.valueChanged)
-        self.quoteListener = self.db.collection("Budget/\(self.budget.getKeyID())/Expenses").whereField("SubBudgetKeyID", isEqualTo: subBudget.getKeyID()).addSnapshotListener { (querySnapshot, err) in
+        
+        self.quoteListenerExpenses = self.db.collection("Budget/\(self.budget.getKeyID())/Expenses").whereField("SubBudgetKeyID", isEqualTo: subBudget.getKeyID()).addSnapshotListener { (querySnapshot, err) in
             if err != nil {
                 //print("Error getting documents: \(err)")
             }
             else if(querySnapshot?.documents == []){
+                //  If there are no expenses in this subbudget
                 self.subBudgetExpenses.append(Expense(expenseName: "Ingen udgifter i denne kategori", keyID: "", amount: 0, date: "", subBudget: ""))
                 self.tableView.reloadData()
             }
             else {
+                // There are expenses in this subbudget
                 querySnapshot?.documentChanges.forEach { diff in
                     if (diff.type == .added){
                         self.subBudgetExpenses.append(Expense(expenseName: "", keyID: diff.document.documentID, amount: 0, date: "", subBudget: ""))
@@ -115,7 +124,7 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
             self.showDatePicker()
             self.categoriesPickerView.reloadAllComponents()
             self.tableView.reloadData()
-            self.quoteListener2 = self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").whereField("Symbol", isEqualTo: self.subBudget.getSymbol()).addSnapshotListener { (querySnapshot, err) in
+            self.quoteListenerSubBudgets = self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").whereField("Symbol", isEqualTo: self.subBudget.getSymbol()).addSnapshotListener { (querySnapshot, err) in
                 if err != nil {
                     //print("Error getting documents: \(err)")
                 }
@@ -205,14 +214,6 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
                 cell.title.text = "Brugt:"
                 cell.amount.text = "\(self.subBudget.getMoneySpent())"
             }
-//            else if(indexPath.row == 1){
-//                cell.title.text = "Tilrådighed:"
-//                cell.amount.text = "\(budget.getMoneyLeft())"
-//            }
-//            else if(indexPath.row == 2){
-//                cell.title.text = "Total:"
-//                cell.amount.text = "\(budget.getMoneyTotal())"
-//            }
         }
         else if(indexPath.section == 1){
             if(subBudgetExpenses[0].getExpenseName() == "Ingen udgifter i denne kategori"){
@@ -277,7 +278,6 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
             alertController.addAction(defaultAction)
             self.present(alertController, animated: true, completion: nil)
         }
-        
         tableView.deselectRow(at: indexPath, animated: true)
     }
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
@@ -319,10 +319,10 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
                     if(!(editInfo.textFields![0].text?.isEmpty)! && !(editInfo.textFields![1].text?.isEmpty)! &&
                         !(editInfo.textFields![2].text?.isEmpty)! &&
                        !(editInfo.textFields![3].text?.isEmpty)!){
-                        //Budget name has been changed!
+                        //No textfields are empty
                         let characterSetNotAllowed = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyz,.-<>$§!#€%&/()=?`^*¨'")
                         if(!(editInfo.textFields![1].text?.isEmpty)! && editInfo.textFields![1].text?.rangeOfCharacter(from: characterSetNotAllowed) == nil){
-                            //BeløbTilRådighed has been changed!
+                            //The amount textfield doesnt contain special characters
                             let changedName = editInfo.textFields![0].text
                             let changedAmount = Int(editInfo.textFields![1].text!)
                             let previousAmount = Int(self.subBudgetExpenses[(indexPath?.row)!].getAmount())
@@ -339,15 +339,11 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
                                 }
                             }
                             self.db.collection("Budget/\(self.budget.getKeyID())/Expenses").document(id).updateData(["Name" : changedName!, "Amount" : changedAmount!, "Date": changedDate, "SubBudgetKeyID" : changedSubbudgetKeyID])
-                            
-                            //let previousSpent = self.subBudget.getMoneySpent() - previousAmount
-                            //let updatedSpent = previousSpent + changedAmount!
                             let updatedSpent = self.subBudget.getMoneySpent() + amountDifference
                             
                             self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").document(self.subBudget.getKeyID()).updateData(["Name" : self.subBudget.getSubBudgetName(), "Symbol" : self.subBudget.getSymbol(), "MoneyLeft" : self.subBudget.getMoneyTotal() - updatedSpent, "MoneySpent" : updatedSpent, "MoneyTotal" : self.subBudget.getMoneyTotal()])
                             
                             let updatedLeft = self.budget.getMoneyLeft() - amountDifference
-                            //let updatedLeft2 = self.budget.getMoneyLeft() + updatedSpent
                             
                             self.db.collection("Budget").document(self.budget.getKeyID()).updateData(["Name" : self.budget.getBudgetName(), "MoneyLeft" : updatedLeft , "MoneyTotal" : self.budget.getMoneyTotal()])
                             
@@ -451,7 +447,6 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
         }
     }
     @objc func filter(){
-        //print("clicked")
         let optionMenu = UIAlertController(title: nil, message: "Filtrer efter", preferredStyle: .actionSheet)
         
         let dateFilter = UIAlertAction(title: "Dato", style: .default, handler: { (action) -> Void in
@@ -487,20 +482,15 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/yyyy"
         dateTextfield.text = formatter.string(from: self.datePicker.date)
-        
-        //ToolBar
-        
     }
     @objc func donedatePicker(){
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM/yyyy"
         dateTextfield.text = formatter.string(from: datePicker.date)
-        //self.view.endEditing(true)
         dateTextfield.resignFirstResponder()
     }
     
     @objc func cancelDatePicker(){
-        //self.view.endEditing(true)
         dateTextfield.resignFirstResponder()
     }
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {

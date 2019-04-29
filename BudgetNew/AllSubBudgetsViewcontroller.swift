@@ -248,7 +248,7 @@ class AllSubBudgetsViewController: UIViewController, UITableViewDelegate, UITabl
                 let deletedSubBudgetKey = self.subBudgets[indexPath.row].getKeyID()
                 let deletedSubBudgetAmount = self.subBudgets[indexPath.row].getMoneySpent()
                 self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").document(deletedSubBudgetKey).delete() { err in
-                    if let err = err {
+                    if err != nil {
                         //print("Error removing document: \(err)")
                     }
                     else {

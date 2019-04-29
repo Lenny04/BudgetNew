@@ -15,7 +15,5 @@ class Cell2: UITableViewCell {
     @IBOutlet var last: UILabel!
     override func awakeFromNib() {
         super.awakeFromNib()
-        
-        // Initialization code
     }
 }

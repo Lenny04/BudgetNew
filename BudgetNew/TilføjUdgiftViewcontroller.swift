@@ -15,29 +15,21 @@ import DropDown
 class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
     var ref: DocumentReference!
     lazy var db = Firestore.firestore()
-    var quoteListener: ListenerRegistration!
-    var quoteListener2: ListenerRegistration!
+    var quoteListenerSubBudget: ListenerRegistration!
+    var quoteListenerCategories: ListenerRegistration!
     @IBOutlet weak var nameText: UITextField!
     @IBOutlet weak var amountText: UITextField!
     @IBOutlet weak var txtDatePicker: UITextField!
     @IBOutlet weak var categoryPicker: UIPickerView!
     var newCategoriesPickerView = UIPickerView()
-    //var dropDownList = DropDown()
-    //let dropdownArrow = UIImage(named: "DropdownSymbol_20px")
-    //var dropDownListArray = [String]()
     let datePicker = UIDatePicker()
     var newCategoriesToolBar = UIToolbar()
-    var newSubCancelButton = UIBarButtonItem()
-    var newSubDoneButton = UIBarButtonItem()
-    var flexSpace = UIBarButtonItem()
+    var newSubCancelButton = UIBarButtonItem(), newSubDoneButton = UIBarButtonItem(), flexSpace = UIBarButtonItem()
     var budget = Budget(budgetName: "", keyID: "", moneyLeft: 0, moneyTotal: 0)
-    var subBudgets = [SubBudget]()
-    var newCategories = [SubBudget]()
+    var subBudgets = [SubBudget](), newCategories = [SubBudget]()
     var newCategoriesTextfield = UITextField()
     @IBOutlet weak var categoryButton: UIButton!
     var currentIndex = 0
-    //var pickOption = ["Husleje", "Hobby", "Fest", "Shopping", "Mad", "Ny kategori"]
-    //var symbols = ["\u{1F3E0}", "\u{26BD}", "\u{1F37B}", "\u{1F6CD}", "\u{1F956}", "\u{2795}"]
     override func viewDidLoad() {
         super.viewDidLoad()
         let settings = db.settings
@@ -62,9 +54,9 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
         newSubDoneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(TilføjUdgiftViewcontroller.subDonePressed))
         flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
         
-        self.quoteListener = self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").addSnapshotListener { (querySnapshot, err) in
+        self.quoteListenerSubBudget = self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").addSnapshotListener { (querySnapshot, err) in
             if err != nil {
-                //                print("Error getting documents: \(err)")
+                //print("Error getting documents: \(err)")
             }
             else {
                 querySnapshot?.documentChanges.forEach { diff in
@@ -92,7 +84,7 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
                             default: break
                             }
                         }
-                        // print("Document: \(self.list[self.list.count-1].getItemDescription()), added in firestore")
+                        // print("Document added in firestore")
                     }
                     if(diff.type == .modified) {
                         //print("Modified the document in firestore")
@@ -129,7 +121,7 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
             self.showNewCategoriesPicker()
             self.categoryPicker.reloadAllComponents()
             self.nameText.autocapitalizationType = .sentences
-            self.quoteListener2 = self.db.collection("Budget/\(self.budget.getKeyID())/Categories").addSnapshotListener { (querySnapshot2, err) in
+            self.quoteListenerCategories = self.db.collection("Budget/\(self.budget.getKeyID())/Categories").addSnapshotListener { (querySnapshot2, err) in
                 if err != nil {
                 }
                 else {
@@ -232,8 +224,6 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
         navigationController?.popToRootViewController(animated: true)
     }
     @IBAction func tilføjUdgift(_ sender: UIButton) {
-        //        let subBudgetPart = expenseSubBudget!.components(separatedBy: " ")
-        //        let subBudget = subBudgetPart[1]
         let expenseSubBudgetKeyID = subBudgets[categoryPicker.selectedRow(inComponent: 0)].getKeyID()
         let expenseAmount = Int(amountText.text!)!
         let subbudgetIndex = self.subBudgets.firstIndex(where: {$0.getKeyID() == expenseSubBudgetKeyID})
@@ -243,14 +233,11 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
             "Date": txtDatePicker.text!,
             "SubBudgetKeyID": expenseSubBudgetKeyID
         ])
-        
-        //let previousSpent = self.subBudgets[subbudgetIndex!].getMoneySpent()
         let updatedSpent = self.subBudgets[subbudgetIndex!].getMoneySpent() + expenseAmount
-        
-        self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").document(self.subBudgets[subbudgetIndex!].getKeyID()).updateData(["Name" : self.subBudgets[subbudgetIndex!].getSubBudgetName(), "Symbol" : self.subBudgets[subbudgetIndex!].getSymbol(), "MoneyLeft" : self.subBudgets[subbudgetIndex!].getMoneyTotal() - updatedSpent, "MoneySpent" : updatedSpent, "MoneyTotal" : self.subBudgets[subbudgetIndex!].getMoneyTotal()])
+
+    self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").document(self.subBudgets[subbudgetIndex!].getKeyID()).updateData(["Name" : self.subBudgets[subbudgetIndex!].getSubBudgetName(), "Symbol" : self.subBudgets[subbudgetIndex!].getSymbol(), "MoneyLeft" : self.subBudgets[subbudgetIndex!].getMoneyTotal() - updatedSpent, "MoneySpent" : updatedSpent, "MoneyTotal" : self.subBudgets[subbudgetIndex!].getMoneyTotal()])
         
         let updatedLeft = self.budget.getMoneyLeft() - expenseAmount
-        //let updatedLeft2 = updatedLeft - updatedSpent
         
         self.db.collection("Budget").document(self.budget.getKeyID()).updateData(["Name" : self.budget.getBudgetName(), "MoneyLeft" : updatedLeft, "MoneyTotal" : self.budget.getMoneyTotal()])
         { err in
@@ -376,7 +363,6 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
     }
     func newCategorySelection(){
         if(!self.subBudgets.contains(where: { $0.getSubBudgetName() == "Ny kategori" })){
-            //self.subBudgets.insert(SubBudget(subBudgetName: "Ny kategori", keyID: "", symbol: "\u{2795}", moneyLeft: 0, moneySpent: 0, moneyTotal: 0), at: self.subBudgets.count)
             self.subBudgets.append(SubBudget(subBudgetName: "Ny kategori", keyID: "", symbol: "\u{2795}", moneyLeft: 0, moneySpent: 0, moneyTotal: 0))
         }
         else if(self.subBudgets.contains(where: { $0.getSubBudgetName() == "Ny kategori" })){

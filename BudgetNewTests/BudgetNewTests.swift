@@ -7,12 +7,18 @@
 //
 
 import XCTest
+import Firebase
+import FirebaseDatabase
+import FirebaseFirestore
 @testable import BudgetNew
 
 class BudgetNewTests: XCTestCase {
-
+    var ref: DocumentReference!
+    lazy var db = Firestore.firestore()
+    var currentKey = ""
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
+        
     }
 
     override func tearDown() {
@@ -22,6 +28,7 @@ class BudgetNewTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        
     }
 
     func testPerformanceExample() {
@@ -29,6 +36,71 @@ class BudgetNewTests: XCTestCase {
         self.measure {
             // Put the code you want to measure the time of here.
         }
+    }
+    func testAddExpense() {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        var result = false
+//        self.ref = self.db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").addDocument(data: [
+//            "Name": "Test",
+//            "Amount": 0,
+//            "Date": "01/01/2018",
+//            "SubBudgetKeyID": "1234"
+//            ])
+        
+        self.db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").document("TestID").setData(["Name": "Test",
+                                                                                                  "Amount": 0,
+                                                                                                  "Date": "01/01/2018",
+                                                                                                  "SubBudgetKeyID": "1234"])
+        
+//        let docRef = db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").whereField("SubBudgetKeyID", isEqualTo: "1234").addSnapshotListener { (querySnapshot, err) in
+//            if err != nil {
+//                //print("Error getting documents: \(err)")
+//            }
+//            else {
+//                result = true
+//                querySnapshot?.documentChanges.forEach { diff in
+//                    self.currentKey = diff.document.documentID
+//                }
+//            }
+//        }
+        
+        let docRef = db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").document("TestID")
+        
+        docRef.getDocument { (document, error) in
+            if let document = document, document.exists {
+                let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+                print("Document data: \(dataDescription)")
+                result = true
+            } else {
+                print("Document does not exist")
+            }
+        }
+        XCTAssertEqual(result, true, "Fejl i tilføjelse af udgift")
+        
+    }
+    func testDeletionOfExpense(){
+        var deletion = false
+        self.db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").document("TestID").delete() { err in
+            if let err = err {
+                //print("Error removing document: \(err)")
+            }
+            else {
+                deletion = true
+            }
+            XCTAssertEqual(deletion, true, "Fejl i sletning af udgift")
+        }
+    }
+    func testAddSubBudget() {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+        self.ref = self.db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/SubBudgets").addDocument(data: [
+            "Name": "SubBudget",
+            "MoneyTotal": 0,
+            "MoneyLeft": 0,
+            "MoneySpent": 0,
+            "Symbol": "Symbol"
+            ])
     }
 
 }

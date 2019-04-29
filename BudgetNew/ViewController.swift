@@ -16,8 +16,8 @@ import DropDown
 class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, ChartViewDelegate, UIViewControllerTransitioningDelegate {
     var ref: DocumentReference!
     lazy var db = Firestore.firestore()
-    var quoteListener: ListenerRegistration!
-    var quoteListener2: ListenerRegistration!
+    var quoteListenerBudget: ListenerRegistration!
+    var quoteListenerSubBudget: ListenerRegistration!
     @IBOutlet var pieChart: PieChartView!
     @IBOutlet var moneyLeftLabel: UILabel!
     @IBOutlet var moneyLeftLabelText: UILabel!
@@ -101,7 +101,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
         DropDown.appearance().cornerRadius = 10
         dropDownList.offsetFromWindowBottom = 360
         dropDownList.width = 100
-        quoteListener = db.collection("Budget/").addSnapshotListener { (querySnapshot, err) in
+        quoteListenerBudget = db.collection("Budget/").addSnapshotListener { (querySnapshot, err) in
             if err != nil {
                 //print("Error getting documents: \(err)")
             }
@@ -188,7 +188,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
             }
             self.updateChart()
             self.updateLabel()
-            self.quoteListener2 = self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").addSnapshotListener { (querySnapshot, err) in
+            self.quoteListenerSubBudget = self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").addSnapshotListener { (querySnapshot, err) in
                 if err != nil {
                     //                print("Error getting documents: \(err)")
                 }
@@ -304,18 +304,12 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
                 }
             }
         }
-        
-        
-        
-        
         // Do any additional setup after loading the view, typically from a nib.
-//        self.generatePieChart()
     }
     func generatePieChart(){
         pieChartList = [PieChartDataEntry]()
         for index in 0..<self.subBudgets.count {
             var udgift = PieChartDataEntry(value: 0)
-//            var udgift1 = PieChartDataEntry(value: Double(subBudgets[index].getMoneySpent()), label: subBudgets[index].getSymbol(), data: subBudgets[index])
             udgift.value = Double(subBudgets[index].getMoneySpent())
             udgift.label = subBudgets[index].getSymbol()
             udgift.data = subBudgets[index].getKeyID() as AnyObject
@@ -381,28 +375,16 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "tilføjUdgift") {
             if let destinationVC = segue.destination as? TilføjUdgiftViewcontroller{
-//                let transition = CATransition()
-//                transition.duration = 0.5
-//                transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
-//                transition.type = CATransitionType.moveIn
-//                transition.subtype = CATransitionSubtype.fromTop
-//                navigationController?.view.layer.add(transition, forKey: nil)
-//                navigationController?.pushViewController(destinationVC, animated: false)
-                
-                
-                //destinationVC.subBudgets = subBudgets
                 destinationVC.budget = budget
             }
         }
         if(segue.identifier == "subBudget"){
             if let destinationVC = segue.destination as? SubBudgetsViewController{
                 let subBudgetToSegue = subBudgets.first(where: { $0.getKeyID() == selectedSubBudget })
-                //let indexOfElement = subBudgets.firstIndex(where: {$0.getKeyID() == selectedSubBudget})
                 destinationVC.subBudget = subBudgetToSegue!
                 destinationVC.budget = budget
                 destinationVC.subBudgets = subBudgets
                 destinationVC.navigationItem.title = "\(subBudgetToSegue!.getSymbol())  \(subBudgetToSegue!.getSubBudgetName())"
-                //destinationVC.expenses = expenses
             }
         }
         if(segue.identifier == "allSubBudgets"){
