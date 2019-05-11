@@ -41,8 +41,8 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     var selectedSubBudget = ""
     var dropDownList = DropDown()
     let dropdownArrow = UIImage(named: "DropdownSymbol_20px")
-    
     override func viewDidAppear(_ animated: Bool) {
+        self.navigationController?.isToolbarHidden = true
         self.updateChart()
         self.updateLabel()
     }
@@ -303,6 +303,7 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
                     }
                 }
             }
+            self.navigationController?.isToolbarHidden = true
         }
         // Do any additional setup after loading the view, typically from a nib.
     }
@@ -419,5 +420,8 @@ class ViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSo
     }
     @objc func buttonAction(){
         dropDownList.show()
+    }
+     @IBAction func changeChart(_ sender: UIButton) {
+        
     }
 }

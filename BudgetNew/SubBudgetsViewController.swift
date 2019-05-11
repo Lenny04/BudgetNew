@@ -27,7 +27,7 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
     var categoriesPickerView = UIPickerView(), datePicker = UIDatePicker()
     var categoriesToolBar = UIToolbar()
     var categoriesCancelButton = UIBarButtonItem(), categoriesDoneButton = UIBarButtonItem(), filterBarButtonItem = UIBarButtonItem()
-    var flexSpace = UIBarButtonItem()
+    var flexSpace = UIBarButtonItem(), toolbarButtons = [UIBarButtonItem]()
     var categoriesTextfield = UITextField(), dateTextfield = UITextField()
     let filter_off = UIImage(named: "Filter_off_30px"), filter_on = UIImage(named: "Filter_on_30px")
     var isSearching = false
@@ -199,7 +199,12 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
         tableView.addGestureRecognizer(longPressRecognizer)
         self.categoriesPickerView.reloadAllComponents()
         filterBarButtonItem = UIBarButtonItem(image: filter_off, style: .done, target: self, action: #selector(filter))
-        self.navigationItem.rightBarButtonItem  = filterBarButtonItem
+        //self.navigationItem.rightBarButtonItem  = filterBarButtonItem
+        self.navigationController?.isToolbarHidden = false
+        toolbarButtons.append(filterBarButtonItem)
+        toolbarButtons.append(flexSpace)
+        toolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addBudgetExpense)))
+        self.toolbarItems = toolbarButtons
         searchbar.delegate = self
         searchbar.returnKeyType = UIReturnKeyType.done
         searchbar.placeholder = "Søg efter en udgift"
@@ -504,5 +509,70 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
             filteredExpenses = subBudgetExpenses.filter({$0.getExpenseName().lowercased().contains(searchBar.text!.lowercased())})
             tableView.reloadData()
         }
+    }
+    @objc func addBudgetExpense(){
+        let alertController = UIAlertController(title: "Tilføj Udgift", message: "", preferredStyle: UIAlertController.Style.alert)
+        let cancelAction = UIAlertAction(title: "Cancel", style: UIAlertAction.Style.default, handler: {
+            (action : UIAlertAction!) -> Void in })
+        let saveAction = UIAlertAction(title: "Tilføj", style: UIAlertAction.Style.default, handler: { alert -> Void in
+            let characterSetNotAllowed = CharacterSet(charactersIn: "abcdefghijklmnopqrstuvwxyz,.-<>$§!#€%&/()=?`^*¨'")
+            if(!(alertController.textFields![0].text?.isEmpty)! && !(alertController.textFields![1].text?.isEmpty)! &&
+                !(alertController.textFields![2].text?.isEmpty)! && alertController.textFields![1].text?.rangeOfCharacter(from: characterSetNotAllowed) == nil){
+                let expenseSubBudgetKeyID = self.subBudget.getKeyID()
+                let expenseAmount = Int(alertController.textFields![1].text!)!
+                self.ref = self.db.collection("Budget/\(self.budget.getKeyID())/Expenses").addDocument(data: [
+                    "Name": alertController.textFields![0].text!,
+                    "Amount": Int(alertController.textFields![1].text!)!,
+                    "Date": self.dateTextfield.text!,
+                    "SubBudgetKeyID": expenseSubBudgetKeyID
+                    ])
+                
+                let updatedSpent = self.subBudget.getMoneySpent() + expenseAmount
+                
+                self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").document(self.subBudget.getKeyID()).updateData(["Name" : self.subBudget.getSubBudgetName(), "Symbol" : self.subBudget.getSymbol(), "MoneyLeft" : self.subBudget.getMoneyTotal() - updatedSpent, "MoneySpent" : updatedSpent, "MoneyTotal" : self.subBudget.getMoneyTotal()])
+                
+                let updatedLeft = self.budget.getMoneyLeft() - expenseAmount
+                
+                self.db.collection("Budget").document(self.budget.getKeyID()).updateData(["Name" : self.budget.getBudgetName(), "MoneyLeft" : updatedLeft, "MoneyTotal" : self.budget.getMoneyTotal()])
+                { err in
+                    if err != nil {
+                        //print("Error adding document: \(err)")
+                    } else {
+                        //print("Document added with ID: \(self.ref!.documentID)")
+                        self.subBudgetExpenses.sort {$0.getExpenseName() < $1.getExpenseName()}
+                        self.tableView.reloadData()
+                    }
+                }
+            }
+            else{
+                print("Fejl")
+            }
+        })
+        alertController.addTextField { (textField0) in
+            textField0.placeholder = "Titel"
+            textField0.autocapitalizationType = .sentences
+        }
+        alertController.addTextField { (textField1) in
+            textField1.placeholder = "Beløb"
+            textField1.keyboardType = .numberPad
+        }
+        alertController.addTextField { (textField2) in
+            let formatter = DateFormatter()
+            formatter.dateFormat = "dd/MM/yyyy"
+            textField2.text = formatter.string(from: self.datePicker.date)
+            textField2.inputView = self.datePicker
+            self.dateTextfield = textField2
+            let toolbar = UIToolbar()
+            toolbar.sizeToFit()
+            let doneButton = UIBarButtonItem(title: "Done", style: .plain, target: self, action: #selector(SubBudgetsViewController.donedatePicker))
+            let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+            let cancelButton = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(SubBudgetsViewController.cancelDatePicker))
+            toolbar.setItems([cancelButton,spaceButton,doneButton], animated: false)
+            textField2.inputAccessoryView = toolbar
+        }
+        alertController.addAction(cancelAction)
+        alertController.addAction(saveAction)
+        
+        self.present(alertController, animated: true, completion: nil)
     }
 }

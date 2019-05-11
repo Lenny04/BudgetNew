@@ -14,7 +14,7 @@ import FirebaseFirestore
 
 class BudgetNewTests: XCTestCase {
     var ref: DocumentReference!
-    lazy var db = Firestore.firestore()
+    var db = Firestore.firestore()
     var currentKey = ""
     override func setUp() {
         // Put setup code here. This method is called before the invocation of each test method in the class.
@@ -41,41 +41,43 @@ class BudgetNewTests: XCTestCase {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
         var result = false
-//        self.ref = self.db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").addDocument(data: [
-//            "Name": "Test",
-//            "Amount": 0,
-//            "Date": "01/01/2018",
-//            "SubBudgetKeyID": "1234"
-//            ])
+        self.ref = self.db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").addDocument(data: [
+            "Name": "Test",
+            "Amount": 0,
+            "Date": "01/01/2018",
+            "SubBudgetKeyID": "1234"
+            ])
+        print("Method: \(result)")
+//        self.db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").document("TestID").setData(["Name": "Test",
+//                                                                                                  "Amount": 0,
+//                                                                                                  "Date": "01/01/2018",
+//                                                                                                  "SubBudgetKeyID": "1234"])
         
-        self.db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").document("TestID").setData(["Name": "Test",
-                                                                                                  "Amount": 0,
-                                                                                                  "Date": "01/01/2018",
-                                                                                                  "SubBudgetKeyID": "1234"])
-        
-//        let docRef = db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").whereField("SubBudgetKeyID", isEqualTo: "1234").addSnapshotListener { (querySnapshot, err) in
-//            if err != nil {
-//                //print("Error getting documents: \(err)")
-//            }
-//            else {
-//                result = true
-//                querySnapshot?.documentChanges.forEach { diff in
-//                    self.currentKey = diff.document.documentID
-//                }
-//            }
-//        }
-        
-        let docRef = db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").document("TestID")
-        
-        docRef.getDocument { (document, error) in
-            if let document = document, document.exists {
-                let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
-                print("Document data: \(dataDescription)")
+        let docRef = db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").whereField("SubBudgetKeyID", isEqualTo: "1234").addSnapshotListener { (querySnapshot, err) in
+            if err != nil {
+                //print("Error getting documents: \(err)")
+            }
+            else {
                 result = true
-            } else {
-                print("Document does not exist")
+                print("Result: \(result)")
+                querySnapshot?.documentChanges.forEach { diff in
+                    print("ID: \(diff.document.documentID)")
+                    self.currentKey = diff.document.documentID
+                }
             }
         }
+        
+//        let docRef = db.collection("Budget/ycnFyYE4zoBGwmlHIqCy/Expenses").document("TestID")
+//
+//        docRef.getDocument { (document, error) in
+//            if let document = document, document.exists {
+//                let dataDescription = document.data().map(String.init(describing:)) ?? "nil"
+//                print("Document data: \(dataDescription)")
+//                result = true
+//            } else {
+//                print("Document does not exist")
+//            }
+//        }
         XCTAssertEqual(result, true, "Fejl i tilføjelse af udgift")
         
     }

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1415BA98227AF7E800529372 /* DownTopSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415BA97227AF7E800529372 /* DownTopSegue.swift */; };
 		1442703821D5296300AE886C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1442703721D5296300AE886C /* AppDelegate.swift */; };
 		1442703A21D5296300AE886C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1442703921D5296300AE886C /* ViewController.swift */; };
 		1442703D21D5296300AE886C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1442703B21D5296300AE886C /* Main.storyboard */; };
@@ -46,6 +47,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1415BA97227AF7E800529372 /* DownTopSegue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownTopSegue.swift; sourceTree = "<group>"; };
 		1442703421D5296300AE886C /* BudgetNew.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BudgetNew.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1442703721D5296300AE886C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1442703921D5296300AE886C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -147,6 +149,7 @@
 				14B55E6B21D6997F00C8941C /* Expense.swift */,
 				14776CE2222F1AF9006CDBC7 /* Cell2.swift */,
 				146C26AF223058980057EE62 /* Cell.swift */,
+				1415BA97227AF7E800529372 /* DownTopSegue.swift */,
 			);
 			path = BudgetNew;
 			sourceTree = "<group>";
@@ -492,6 +495,7 @@
 				14C37939220E312D0024CED3 /* TilføjUdgiftViewcontroller.swift in Sources */,
 				1442703A21D5296300AE886C /* ViewController.swift in Sources */,
 				1442703821D5296300AE886C /* AppDelegate.swift in Sources */,
+				1415BA98227AF7E800529372 /* DownTopSegue.swift in Sources */,
 				14B55E6821D63EF800C8941C /* Budget.swift in Sources */,
 				14776CE1222E9A51006CDBC7 /* AllSubBudgetsViewcontroller.swift in Sources */,
 				14B55E6A21D68B5A00C8941C /* SubBudget.swift in Sources */,

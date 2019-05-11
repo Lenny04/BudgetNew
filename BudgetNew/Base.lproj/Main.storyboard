@@ -115,6 +115,14 @@
                                     <segue destination="D4F-rq-9ga" kind="show" identifier="tilføjUdgift" id="r3d-gG-p6c"/>
                                 </connections>
                             </button>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YRL-ms-7Nz">
+                                <rect key="frame" x="299" y="544" width="40" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="BarChart"/>
+                                <connections>
+                                    <action selector="changeChart:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KgY-Gd-yHS"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
@@ -290,6 +298,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="BarChart" width="512" height="512"/>
         <image name="Green_check_mark_2" width="30" height="30"/>
         <image name="plus_button" width="612" height="612"/>
     </resources>
