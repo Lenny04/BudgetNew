@@ -210,7 +210,6 @@
 				1442703121D5296300AE886C /* Frameworks */,
 				1442703221D5296300AE886C /* Resources */,
 				24E544B9CDF645C06B1F01FA /* [CP] Embed Pods Frameworks */,
-				3E0B7F669B078A821F4582F4 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -272,13 +271,16 @@
 				TargetAttributes = {
 					1442703321D5296300AE886C = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 					};
 					1442704721D5296300AE886C = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 						TestTargetID = 1442703321D5296300AE886C;
 					};
 					1442705221D5296300AE886C = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 						TestTargetID = 1442703321D5296300AE886C;
 					};
 				};
@@ -341,7 +343,7 @@
 			);
 			inputPaths = (
 				"${PODS_ROOT}/Target Support Files/Pods-BudgetNew/Pods-BudgetNew-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/BoringSSL/openssl.framework",
+				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
 				"${BUILT_PRODUCTS_DIR}/Charts/Charts.framework",
 				"${BUILT_PRODUCTS_DIR}/ChartsRealm/ChartsRealm.framework",
 				"${BUILT_PRODUCTS_DIR}/DropDown/DropDown.framework",
@@ -358,7 +360,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Charts.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ChartsRealm.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/DropDown.framework",
@@ -396,28 +398,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
-			showEnvVarsInLog = 0;
-		};
-		3E0B7F669B078A821F4582F4 /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-BudgetNew/Pods-BudgetNew-resources.sh",
-				"${PODS_CONFIGURATION_BUILD_DIR}/FirebaseFirestore/gRPCCertificates-Firestore.bundle",
-			);
-			name = "[CP] Copy Pods Resources";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/gRPCCertificates-Firestore.bundle",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-BudgetNew/Pods-BudgetNew-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		A0AC2986DAAB623C7068D0EE /* [CP] Check Pods Manifest.lock */ = {
@@ -692,7 +672,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = LR.com.ImprovedBudget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
@@ -712,7 +692,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = LR.com.ImprovedBudget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
@@ -733,7 +713,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Linoj.BudgetNewTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BudgetNew.app/BudgetNew";
 			};
@@ -755,7 +735,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Linoj.BudgetNewTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BudgetNew.app/BudgetNew";
 			};
@@ -776,7 +756,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Linoj.BudgetNewUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = BudgetNew;
 			};
@@ -797,7 +777,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = Linoj.BudgetNewUITests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_TARGET_NAME = BudgetNew;
 			};

@@ -88,7 +88,7 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
                     if(diff.type == .modified) {
                         //print("Modified the document in firestore")
                         let value1 = diff.document.data() as NSDictionary
-                        let changedIndex = self.subBudgets.index(where: {$0.getKeyID() == diff.document.documentID})
+                        let changedIndex = self.subBudgets.firstIndex(where: {$0.getKeyID() == diff.document.documentID})
                         for (key, value) in value1 {
                             let notenu = key as! String
                             if(notenu == "Name"){
@@ -329,7 +329,7 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
             self.subBudgets.append(SubBudget(subBudgetName: "Ny kategori", keyID: "", symbol: "\u{2795}", moneyLeft: 0, moneySpent: 0, moneyTotal: 0))
         }
         else if(self.subBudgets.contains(where: { $0.getSubBudgetName() == "Ny kategori" })){
-            let newCategoryIndex = self.subBudgets.index(where: {$0.getSubBudgetName() ==
+            let newCategoryIndex = self.subBudgets.firstIndex(where: {$0.getSubBudgetName() ==
                 "Ny kategori"})
             self.subBudgets.remove(at: newCategoryIndex!)
             self.subBudgets.append(SubBudget(subBudgetName: "Ny kategori", keyID: "", symbol: "\u{2795}", moneyLeft: 0, moneySpent: 0, moneyTotal: 0))
@@ -337,16 +337,33 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
     }
     @objc func alertTextFieldDidChange(sender : UITextField){
         let alertController = self.presentedViewController as? UIAlertController
-        
-        var string = sender.text!
-        print(string)
-        for scalar in string.unicodeScalars {
-            isEmoji = scalar.properties.isEmoji
-        }
-        print("Her: \(isEmoji)")
+        var emoji = sender.text!
+//        for scalar in emoji.unicodeScalars {
+//            isEmoji = scalar.properties.isEmoji
+//        }
         let submitAction = alertController?.actions[0]
-        print(submitAction!.isEnabled)
-        submitAction?.isEnabled = isEmoji
-        print(submitAction!.isEnabled)
+        submitAction?.isEnabled = emoji.containsEmoji() && emoji.count == 1
+    }
+}
+
+extension String {
+    func containsEmoji() -> Bool {
+        var result = false
+        for scalar in self.unicodeScalars {
+            switch scalar.value {
+            case 0x1F600...0x1F64F:
+                result = true
+            case 0x1F300...0x1F5FF:
+                result = true
+            case 0x1F680...0x1F6FF:
+                result = true
+            case 0x2600...0x26FF:
+                result = true
+            case 0x2700...0x27BF:
+                result = true
+            default: ()
+            }
+        }
+        return result
     }
 }

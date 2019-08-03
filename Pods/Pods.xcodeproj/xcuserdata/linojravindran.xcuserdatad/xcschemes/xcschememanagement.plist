@@ -4,7 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>BoringSSL.xcscheme</key>
+		<key>BoringSSL-GRPC.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
@@ -74,13 +74,6 @@
 			<key>orderHint</key>
 			<integer>9</integer>
 		</dict>
-		<key>FirebaseFirestore-gRPCCertificates-Firestore.xcscheme</key>
-		<dict>
-			<key>isShown</key>
-			<false/>
-			<key>orderHint</key>
-			<integer>11</integer>
-		</dict>
 		<key>FirebaseFirestore.xcscheme</key>
 		<dict>
 			<key>isShown</key>
@@ -93,21 +86,21 @@
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>12</integer>
+			<integer>11</integer>
 		</dict>
 		<key>GoogleAppMeasurement.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>13</integer>
+			<integer>12</integer>
 		</dict>
 		<key>GoogleUtilities.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
-			<integer>14</integer>
+			<integer>13</integer>
 		</dict>
 		<key>Pods-BudgetNew.xcscheme</key>
 		<dict>
@@ -151,12 +144,19 @@
 			<key>orderHint</key>
 			<integer>24</integer>
 		</dict>
-		<key>gRPC-C++.xcscheme</key>
+		<key>gRPC-C++-gRPCCertificates-Cpp.xcscheme</key>
 		<dict>
 			<key>isShown</key>
 			<false/>
 			<key>orderHint</key>
 			<integer>15</integer>
+		</dict>
+		<key>gRPC-C++.xcscheme</key>
+		<dict>
+			<key>isShown</key>
+			<false/>
+			<key>orderHint</key>
+			<integer>14</integer>
 		</dict>
 		<key>gRPC-Core.xcscheme</key>
 		<dict>

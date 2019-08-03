@@ -310,7 +310,7 @@ class BarChartViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     func updateChart(){
         barChart.noDataText = "Har brug for data"
-        let chartDataSet = BarChartDataSet(values: barChartList, label: nil)
+        let chartDataSet = BarChartDataSet(entries: barChartList, label: nil)
         let chartData = BarChartData(dataSet: chartDataSet)
         barChart.data = chartData
         chartDataSet.colors = ChartColorTemplates.colorful()

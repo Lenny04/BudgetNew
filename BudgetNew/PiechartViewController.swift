@@ -314,7 +314,7 @@ class PiechartViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     func updateChart(){
         pieChart.noDataText = "Har brug for data"
-        let chartDataSet = PieChartDataSet(values: pieChartList, label: nil)
+        let chartDataSet = PieChartDataSet(entries: pieChartList, label: nil)
         chartDataSet.drawValuesEnabled = false
         let chartData = PieChartData(dataSet: chartDataSet)
         let blue = UIColor(red: 0.2196, green: 0.6314, blue: 0.9529, alpha: 1.0)
@@ -411,8 +411,5 @@ class PiechartViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     }
     @objc func buttonAction(){
         dropDownList.show()
-    }
-     @IBAction func changeChart(_ sender: UIButton) {
-        
     }
 }
