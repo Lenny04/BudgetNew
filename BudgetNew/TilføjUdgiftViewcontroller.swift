@@ -22,10 +22,8 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
     @IBOutlet weak var txtDatePicker: UITextField!
     @IBOutlet weak var categoryPicker: UIPickerView!
     let datePicker = UIDatePicker()
-    var newSubCancelButton = UIBarButtonItem(), newSubDoneButton = UIBarButtonItem(), flexSpace = UIBarButtonItem()
     var budget = Budget(budgetName: "", keyID: "", moneyLeft: 0, moneyTotal: 0)
     var subBudgets = [SubBudget]()
-    var newCategoriesTextfield = UITextField()
     @IBOutlet weak var categoryButton: UIButton!
     var currentIndex = 0
     var isEmoji = BooleanLiteralType()
@@ -49,9 +47,6 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
         UIGraphicsEndImageContext()
         self.view.backgroundColor = UIColor(patternImage: image)
         amountText.keyboardType = UIKeyboardType.numberPad
-        newSubCancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(TilføjUdgiftViewcontroller.subTappedToolBarBtn))
-        newSubDoneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(TilføjUdgiftViewcontroller.subDonePressed))
-        flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
         
         self.quoteListenerSubBudget = self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").addSnapshotListener { (querySnapshot, err) in
             if err != nil {
@@ -244,48 +239,19 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
             if(subBudgets[row].getSubBudgetName() == "Ny kategori"){
                 let alert = UIAlertController(title: "Ny kategori", message: "Opret ny kategori!", preferredStyle: .alert)
                 alert.addAction(UIAlertAction(title: "Opret", style: .default, handler: { action in
-                    if let expenseSubBudgetName = alert.textFields![0].text {
-                        if expenseSubBudgetName.isEmpty {
-                            let alert = UIAlertController(title: "Fejl", message: "Mangler titel til udgift", preferredStyle: .alert)
-                            alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {(_: UIAlertAction!) in
-                            }))
-                            self.present(alert, animated: true, completion: nil)
-                            self.categoryPicker.selectRow(0, inComponent: 0, animated: true)
-                        }
-                        else{
-                            var isEmoji = BooleanLiteralType()
-                            var string = alert.textFields![0].text!
-                            for scalar in string.unicodeScalars {
-                                isEmoji = scalar.properties.isEmoji
-                            }
-                            if(isEmoji){
-                                let expenseSubBudget = alert.textFields![1].text!
-                                let indexStartOfText = expenseSubBudget.index(expenseSubBudget.startIndex, offsetBy: 2)
-                                let category = String(expenseSubBudget[expenseSubBudget.startIndex])
-                                self.ref = self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").addDocument(data: [
-                                    "Name": alert.textFields![0].text!,
-                                    "MoneyTotal": 0,
-                                    "MoneyLeft": 0,
-                                    "MoneySpent": 0,
-                                    "Symbol": category
-                                ]) { err in
-                                    if err != nil {
-                                        //print("Error adding document: \(err)")
-                                    } else {
-                                        //print("Document added with ID: \(self.ref!.documentID)")
-                                        let subBudgetIndex = self.subBudgets.firstIndex(where: {$0.getSymbol() == category})
-                                        self.categoryPicker.selectRow(subBudgetIndex!, inComponent: 0, animated: true)
-                                    }
-                                }
-                            }
-                            else{
-                                let alert = UIAlertController(title: "Fejl", message: "Emoji tekstfeltet må kun indeholde en emoji", preferredStyle: .alert)
-                                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: {(_: UIAlertAction!) in
-                                }))
-                                self.present(alert, animated: true, completion: nil)
-                                self.categoryPicker.selectRow(0, inComponent: 0, animated: true)
-                            }
-                            
+                    self.ref = self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").addDocument(data: [
+                        "Name": alert.textFields![0].text!,
+                        "MoneyTotal": 0,
+                        "MoneyLeft": 0,
+                        "MoneySpent": 0,
+                        "Symbol": alert.textFields![1].text!
+                    ]) { err in
+                        if err != nil {
+                            //print("Error adding document: \(err)")
+                        } else {
+                            //print("Document added with ID: \(self.ref!.documentID)")
+                            let subBudgetIndex = self.subBudgets.firstIndex(where: {$0.getSymbol() == alert.textFields![1].text!})
+                            self.categoryPicker.selectRow(subBudgetIndex!, inComponent: 0, animated: true)
                         }
                     }
                 }))
@@ -298,7 +264,6 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
                 })
                 alert.addTextField(configurationHandler: { textFieldNewCategories in
                     textFieldNewCategories.placeholder = "Emoji for kategori"
-                    self.newCategoriesTextfield = textFieldNewCategories
                     textFieldNewCategories.addTarget(self, action: #selector(TilføjUdgiftViewcontroller.alertTextFieldDidChange),
                                                      for: .editingChanged)
                 })
@@ -317,13 +282,6 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
         //Causes the view (or one of its embedded text fields) to resign the first responder status.
         view.endEditing(true)
     }
-    @objc func subDonePressed(sender: UIBarButtonItem) {
-        newCategoriesTextfield.resignFirstResponder()
-    }
-    
-    @objc func subTappedToolBarBtn(sender: UIBarButtonItem) {
-        newCategoriesTextfield.resignFirstResponder()
-    }
     func newCategorySelection(){
         if(!self.subBudgets.contains(where: { $0.getSubBudgetName() == "Ny kategori" })){
             self.subBudgets.append(SubBudget(subBudgetName: "Ny kategori", keyID: "", symbol: "\u{2795}", moneyLeft: 0, moneySpent: 0, moneyTotal: 0))
@@ -337,12 +295,12 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
     }
     @objc func alertTextFieldDidChange(sender : UITextField){
         let alertController = self.presentedViewController as? UIAlertController
-        var emoji = sender.text!
+        let emoji = sender.text!
 //        for scalar in emoji.unicodeScalars {
 //            isEmoji = scalar.properties.isEmoji
 //        }
         let submitAction = alertController?.actions[0]
-        submitAction?.isEnabled = emoji.containsEmoji() && emoji.count == 1
+        submitAction?.isEnabled = emoji.containsEmoji() && emoji.count == 1 && !(alertController?.textFields?[0].text!.isEmpty)!
     }
 }
 
