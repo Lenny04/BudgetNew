@@ -13,16 +13,16 @@ import FirebaseFirestore
 import Charts
 import DropDown
 
-class PiechartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, ChartViewDelegate, UIViewControllerTransitioningDelegate {
+class BarChartViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, ChartViewDelegate, UIViewControllerTransitioningDelegate {
     var ref: DocumentReference!
     lazy var db = Firestore.firestore()
     var quoteListenerBudget: ListenerRegistration!
     var quoteListenerSubBudget: ListenerRegistration!
-    @IBOutlet var pieChart: PieChartView!
+    @IBOutlet var barChart: BarChartView!
     @IBOutlet var moneyLeftLabel: UILabel!
     @IBOutlet var moneyLeftLabelText: UILabel!
     var budget = Budget(budgetName: "", keyID: "", moneyLeft: 0, moneyTotal: 0)
-    var subBudgets = [SubBudget](), pieChartList = [PieChartDataEntry](), expenses = [Expense]()
+    var subBudgets = [SubBudget](), barChartList = [BarChartDataEntry](), expenses = [Expense]()
     var subBudgetPickerView = UIPickerView(), datePickerView = UIDatePicker()
     var pickOption = ["Husleje", "Hobby", "Fest", "Shopping", "Mad", "Ny kategori"]
     var symbols = ["\u{1F3E0}", "\u{26BD}", "\u{1F37B}", "\u{1F6CD}", "\u{1F956}", "\u{2795}"]
@@ -31,36 +31,44 @@ class PiechartViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     var dateDoneButton = UIBarButtonItem(), flexSpace = UIBarButtonItem()
     var selectedSubBudget = "", dropDownList = DropDown()
     let dropdownArrow = UIImage(named: "DropdownSymbol_20px")
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        if (self.isMovingFromParent) {
+            UIDevice.current.setValue(Int(UIInterfaceOrientation.portrait.rawValue), forKey: "orientation")
+        }
+    }
+    
     override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.isToolbarHidden = true
-        self.updateChart()
-        self.updateLabel()
+        //self.updateChart()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        pieChart.chartDescription?.enabled = false
+        canRotate()
+        barChart.chartDescription?.enabled = false
         let settings = db.settings
         settings.areTimestampsInSnapshotsEnabled = true
         db.settings = settings
-        pieChart.delegate = self
-        pieChart.legend.form = .none
-        pieChart.legend.font = UIFont(name: "HelveticaNeue-Light", size: 20.0)!
-//        pieChart.frame.size = CGSize(width: 450, height: 450)
-//        pieChart.setExtraOffsets(left: 0, top: 0, right: 70, bottom: 0)
-        pieChart.legend.yOffset = 30
+        barChart.delegate = self
+        barChart.legend.form = .none
+        barChart.legend.font = UIFont(name: "HelveticaNeue-Light", size: 20.0)!
+        barChart.legend.yOffset = 30
+        barChart.doubleTapToZoomEnabled = false
+        barChart.pinchZoomEnabled = true
         subBudgetPickerView.delegate = self
         subBudgetPickerView.dataSource = self
         subBudgetPickerView.tag = 1
         datePickerView.tag = 2
         datePickerView.datePickerMode = .date
-        datePickerView.addTarget(self, action: #selector(PiechartViewController.datePickerValueChanged), for: UIControl.Event.valueChanged)
+        datePickerView.addTarget(self, action: #selector(BarChartViewController.datePickerValueChanged), for: UIControl.Event.valueChanged)
         subBudgetToolBar = UIToolbar(frame: CGRect(x: 0, y: 40, width: self.view.frame.width, height: self.view.frame.height/15))
-        subCancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(PiechartViewController.subTappedToolBarBtn))
-        subDoneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(PiechartViewController.subDonePressed))
+        subCancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(BarChartViewController.subTappedToolBarBtn))
+        subDoneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(BarChartViewController.subDonePressed))
         dateToolBar = UIToolbar(frame: CGRect(x: 0, y: 40, width: self.view.frame.width, height: self.view.frame.height/15))
-        dateCancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(PiechartViewController.dateTappedToolBarBtn))
-        dateDoneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(PiechartViewController.dateDonePressed))
+        dateCancelButton = UIBarButtonItem(title: "Cancel", style: UIBarButtonItem.Style.plain, target: self, action: #selector(BarChartViewController.dateTappedToolBarBtn))
+        dateDoneButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.done, target: self, action: #selector(BarChartViewController.dateDonePressed))
         flexSpace = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: self, action: nil)
         
         let testFrame = CGRect(x: 0, y: 0, width: 180, height: 40)
@@ -148,7 +156,6 @@ class PiechartViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
                             }
                         }
                         //self.generatePieChart()
-                        self.updateLabel()
                         // GET SUBBUDGET
                     }
                     if(diff.type == .modified){
@@ -167,17 +174,14 @@ class PiechartViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
                         }
                         self.subBudgets.sort {$0.getSubBudgetName() < $1.getSubBudgetName()}
                         self.updateChart()
-                        self.updateLabel()
                     }
                     if(diff.type == .removed){
                         //print("Removed")
                         self.updateChart()
-                        self.updateLabel()
                     }
                 }
             }
             self.updateChart()
-            self.updateLabel()
             self.quoteListenerSubBudget = self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").addSnapshotListener { (querySnapshot, err) in
                 if err != nil {
                     //                print("Error getting documents: \(err)")
@@ -251,7 +255,6 @@ class PiechartViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
                                     }
                                 }
                                 self.generatePieChart()
-                                self.updateLabel()
                             }
                             //print("Document: \(self.list[self.list.count-1].getItemDescription()), added in firestore")
                         }
@@ -279,7 +282,6 @@ class PiechartViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
                             }
                             self.subBudgets.sort {$0.getSubBudgetName() < $1.getSubBudgetName()}
                             self.generatePieChart()
-                            self.updateLabel()
                         }
                         if(diff.type == .removed) {
                             //print("Document removed from firestore")
@@ -287,7 +289,6 @@ class PiechartViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
                             if(subBudgetToRemoveIndex != nil){
                                 self.subBudgets.remove(at: subBudgetToRemoveIndex!)
                                 self.generatePieChart()
-                                self.updateLabel()
                             }
                         }
                     }
@@ -298,38 +299,27 @@ class PiechartViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         // Do any additional setup after loading the view, typically from a nib.
     }
     func generatePieChart(){
-        pieChartList = [PieChartDataEntry]()
+        barChartList = [BarChartDataEntry]()
         for index in 0..<self.subBudgets.count {
-            var udgift = PieChartDataEntry(value: 0)
-            udgift.value = Double(subBudgets[index].getMoneySpent())
-            udgift.label = subBudgets[index].getSymbol()
-            udgift.data = subBudgets[index].getKeyID() as AnyObject
-            if(!pieChartList.contains(where: { $0.data! as! String == subBudgets[index].getKeyID() })
-                && subBudgets[index].getSymbol() != ""){
-                pieChartList.append(udgift)
-            }
+            let udgift = BarChartDataEntry(x: Double(index), y: Double(subBudgets[index].getMoneySpent()))
+            
+            
+            barChartList.append(udgift)
         }
         updateChart()
     }
     func updateChart(){
-        pieChart.noDataText = "Har brug for data"
-        let chartDataSet = PieChartDataSet(values: pieChartList, label: nil)
-        chartDataSet.drawValuesEnabled = false
-        let chartData = PieChartData(dataSet: chartDataSet)
-        let blue = UIColor(red: 0.2196, green: 0.6314, blue: 0.9529, alpha: 1.0)
-        let green = UIColor(red: 0.4745, green: 0.7804, blue: 0.3255, alpha: 1.0)
-        let red = UIColor(red: 1, green: 0.4353, blue: 0.3804, alpha: 1.0)
-        let turkish = UIColor(red: 0, green: 0.702, blue: 0.7373, alpha: 1.0)
-        let purple = UIColor(red: 0.7451, green: 0.6196, blue: 0.7882, alpha: 1.0)
-        let orange = UIColor(red: 0.9882, green: 0.651, blue: 0.4431, alpha: 1.0)
-        let grey = UIColor(red: 0.5765, green: 0.5765, blue: 0.5765, alpha: 1.0)
-        let colors = [blue, green, red, turkish, purple, orange, grey]
-        chartDataSet.colors = colors // ChartColorTemplates.colorful()
-        chartDataSet.entryLabelFont = UIFont(name: "HelveticaNeue-Light", size: 20.0)!
-        pieChart.data = chartData
-        pieChart.holeRadiusPercent = 0.6 // Fjerner hullet i midten af Piechart
-        pieChart.transparentCircleRadiusPercent = 0 // Fjerner transparent cirkel i midten
-        pieChart.drawEntryLabelsEnabled = true // Fjerner teksten fra hver pie slice
+        barChart.noDataText = "Har brug for data"
+        let chartDataSet = BarChartDataSet(values: barChartList, label: nil)
+        let chartData = BarChartData(dataSet: chartDataSet)
+        barChart.data = chartData
+        chartDataSet.colors = ChartColorTemplates.colorful()
+        barChart.xAxis.labelPosition = .bottom
+        barChart.animate(xAxisDuration: 1.0, yAxisDuration: 1.0)
+        let xaxis = barChart.xAxis
+        xaxis.drawGridLinesEnabled = false
+        xaxis.granularity = 1
+        //xaxis.valueFormatter = IndexAxisValueFormatter(values: ["\u{1F3E0}", "\u{26BD}", "\u{1F37B}", "\u{1F6CD}", "\u{1F956}", "\u{2795}"])
     }
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
@@ -387,31 +377,14 @@ class PiechartViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
         }
     }
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
-        if let dataSet = chartView.data?.dataSets[ highlight.dataSetIndex] {
-            //self.navigationController?.pushViewController(SubBudgetsViewController, animated: true)
-            let sliceIndex: Int = dataSet.entryIndex( entry: entry)
-//            print( "Selected slice index: \( sliceIndex)")
-            let emptyVals = [Highlight]()
-            pieChart.highlightValues(emptyVals)
-            selectedSubBudget = entry.data! as! String
-//            print("\(entry.x) in \(entry.y), Data: \(entry.data!)")
-            performSegue(withIdentifier: "subBudget", sender: self)
-            
-        }
-    }
-    func updateLabel(){
-        if(self.budget.getMoneyLeft() <= 0){
-            self.moneyLeftLabel.textColor = UIColor(red: 0.7569, green: 0, blue: 0, alpha: 1.0)
-        }
-        else{
-            self.moneyLeftLabel.textColor = UIColor(red: 0.051, green: 0.6471, blue: 0, alpha: 1.0)
-        }
-        self.moneyLeftLabel.text = "\(self.budget.getMoneyLeft()) kr."
+        selectedSubBudget = subBudgets[Int(highlight.x)].getKeyID()
+        performSegue(withIdentifier: "subBudget", sender: self)
     }
     @objc func buttonAction(){
         dropDownList.show()
     }
-     @IBAction func changeChart(_ sender: UIButton) {
-        
+    @objc func canRotate() -> Void {}
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        barChart.autoresizingMask = UIView.AutoresizingMask(rawValue: UIView.AutoresizingMask.RawValue(UInt8(UIView.AutoresizingMask.flexibleWidth.rawValue) | UInt8(UIView.AutoresizingMask.flexibleHeight.rawValue)))
     }
 }

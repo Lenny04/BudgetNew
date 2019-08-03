@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="mNB-hR-H0q">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="J8H-dD-bTs">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -13,7 +13,7 @@
         <!--Tilføj udgift-->
         <scene sceneID="H8x-S8-8J4">
             <objects>
-                <viewController id="D4F-rq-9ga" customClass="TilføjUdgiftViewcontroller" customModule="BudgetNew" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="D4F-rq-9ga" customClass="TilføjUdgiftViewcontroller" customModule="BudgetNew" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="4tK-Kg-uSO">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -76,12 +76,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="PZC-Uu-XgE" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-58.399999999999999" y="877.51124437781118"/>
+            <point key="canvasLocation" x="-804" y="1236"/>
         </scene>
         <!--ViewController-->
         <scene sceneID="tne-QT-ifu">
             <objects>
-                <viewController storyboardIdentifier="ViewController" title="ViewController" id="BYZ-38-t0r" customClass="ViewController" customModule="BudgetNew" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ViewController" title="ViewController" id="BYZ-38-t0r" customClass="BarChartViewController" customModule="BudgetNew" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -111,45 +111,31 @@
                                 <rect key="frame" x="142" y="450" width="90" height="90"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="plus_button"/>
-                                <connections>
-                                    <segue destination="D4F-rq-9ga" kind="show" identifier="tilføjUdgift" id="r3d-gG-p6c"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YRL-ms-7Nz">
                                 <rect key="frame" x="299" y="544" width="40" height="40"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" image="BarChart"/>
-                                <connections>
-                                    <action selector="changeChart:" destination="BYZ-38-t0r" eventType="touchUpInside" id="KgY-Gd-yHS"/>
-                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                     </view>
-                    <navigationItem key="navigationItem" id="KiY-7l-QS5">
-                        <barButtonItem key="leftBarButtonItem" title="👤" id="gAg-rp-Ln8"/>
-                        <barButtonItem key="rightBarButtonItem" title="⚙️" id="Rb7-oC-2uZ">
-                            <connections>
-                                <segue destination="5nx-kf-rTr" kind="show" identifier="allSubBudgets" id="cSi-68-XBT"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="KiY-7l-QS5"/>
                     <connections>
+                        <outlet property="barChart" destination="YMQ-aJ-Dst" id="Blb-MS-uM1"/>
                         <outlet property="moneyLeftLabel" destination="OVm-ge-1Y9" id="Vg8-ob-J6I"/>
                         <outlet property="moneyLeftLabelText" destination="5TT-kE-rTC" id="Ogn-UY-ZRM"/>
-                        <outlet property="pieChart" destination="YMQ-aJ-Dst" id="Blb-MS-uM1"/>
-                        <segue destination="YRE-Vd-5VI" kind="show" identifier="subBudget" id="wAs-o0-r6p"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-58.399999999999999" y="116.49175412293854"/>
+            <point key="canvasLocation" x="-2295" y="1236"/>
         </scene>
         <!--All Sub Budgets View Controller-->
         <scene sceneID="Dr3-Qr-MEi">
             <objects>
-                <viewController id="5nx-kf-rTr" customClass="AllSubBudgetsViewController" customModule="BudgetNew" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="5nx-kf-rTr" customClass="AllSubBudgetsViewController" customModule="BudgetNew" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="tNc-jZ-BuV">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -207,12 +193,12 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uz6-Ww-VLy" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="645.60000000000002" y="-600.44977511244383"/>
+            <point key="canvasLocation" x="433" y="-493"/>
         </scene>
         <!--Sub Budgets View Controller-->
         <scene sceneID="tf7-iZ-stZ">
             <objects>
-                <viewController id="YRE-Vd-5VI" customClass="SubBudgetsViewController" customModule="BudgetNew" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController hidesBottomBarWhenPushed="YES" id="YRE-Vd-5VI" customClass="SubBudgetsViewController" customModule="BudgetNew" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="eLE-m4-PEP">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -276,7 +262,127 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="LZi-ra-MXM" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="645.60000000000002" y="115.59220389805098"/>
+            <point key="canvasLocation" x="433" y="381"/>
+        </scene>
+        <!--Bar Chart View Controller-->
+        <scene sceneID="B2e-gs-wgf">
+            <objects>
+                <viewController id="hr5-8J-z6Z" customClass="BarChartViewController" customModule="BudgetNew" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="hs9-eM-q2V">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="amy-uD-ehW" customClass="BarChartView" customModule="Charts">
+                                <rect key="frame" x="0.0" y="94" width="375" height="375"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="raH-A1-uMd">
+                                <rect key="frame" x="142" y="447" width="90" height="90"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="plus_button"/>
+                                <connections>
+                                    <segue destination="D4F-rq-9ga" kind="show" identifier="tilføjUdgift" id="VYw-8F-Oc9"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="qlF-jf-pt5"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="aTZ-BL-Fks">
+                        <barButtonItem key="leftBarButtonItem" title="👤" id="liX-29-KrC"/>
+                        <barButtonItem key="rightBarButtonItem" title="⚙️" id="Afh-Nj-Ruq">
+                            <connections>
+                                <segue destination="5nx-kf-rTr" kind="show" identifier="allSubBudgets" id="fem-wf-6Sn"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="barChart" destination="amy-uD-ehW" id="7Xb-A5-rge"/>
+                        <segue destination="YRE-Vd-5VI" kind="show" identifier="subBudget" id="aoH-Z3-USq"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="p1s-nx-leM" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-804" y="380.95952023988008"/>
+        </scene>
+        <!--Piechart View Controller-->
+        <scene sceneID="Igx-G0-bwM">
+            <objects>
+                <viewController id="AsW-8K-cE4" customClass="PiechartViewController" customModule="BudgetNew" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="hZf-Yh-vxd">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JXl-3O-vNH" customClass="PieChartView" customModule="Charts">
+                                <rect key="frame" x="0.0" y="64" width="375" height="375"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Tilbage" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Uex-JO-jm7">
+                                        <rect key="frame" x="152" y="153" width="71" height="21"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tmb-3J-Mqd">
+                                        <rect key="frame" x="127" y="116" width="120" height="32"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="25"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </view>
+                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ED3-db-bSW">
+                                <rect key="frame" x="142" y="447" width="90" height="90"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <state key="normal" image="plus_button"/>
+                                <connections>
+                                    <segue destination="D4F-rq-9ga" kind="show" identifier="tilføjUdgift" id="Cax-BG-DhN"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                        <viewLayoutGuide key="safeArea" id="JEr-Tz-Bzm"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="4Pa-qd-wSR">
+                        <barButtonItem key="leftBarButtonItem" title="👤" id="gAg-rp-Ln8"/>
+                        <barButtonItem key="rightBarButtonItem" title="⚙️" id="Rb7-oC-2uZ">
+                            <connections>
+                                <segue destination="5nx-kf-rTr" kind="show" identifier="allSubBudgets" id="cSi-68-XBT"/>
+                            </connections>
+                        </barButtonItem>
+                    </navigationItem>
+                    <connections>
+                        <outlet property="moneyLeftLabel" destination="tmb-3J-Mqd" id="fZl-WJ-K72"/>
+                        <outlet property="moneyLeftLabelText" destination="Uex-JO-jm7" id="5WU-CH-0Lc"/>
+                        <outlet property="pieChart" destination="JXl-3O-vNH" id="BhH-Xu-aLt"/>
+                        <segue destination="YRE-Vd-5VI" kind="show" identifier="subBudget" id="kS7-rh-VMz"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0L8-xV-4qu" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-804" y="-282.00899550224892"/>
+        </scene>
+        <!--Tab Bar Controller-->
+        <scene sceneID="U4d-Q3-Lb6">
+            <objects>
+                <tabBarController id="J8H-dD-bTs" sceneMemberID="viewController">
+                    <tabBar key="tabBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="xoh-N4-YUE">
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="49"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </tabBar>
+                    <connections>
+                        <segue destination="4Sr-W6-oKO" kind="relationship" relationship="viewControllers" id="cnp-Jq-er8"/>
+                        <segue destination="n6H-9y-rWQ" kind="relationship" relationship="viewControllers" id="cyN-ns-8Ci"/>
+                    </connections>
+                </tabBarController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="KEd-Mt-6eb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-2696" y="49"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="yws-8s-QMP">
@@ -294,12 +400,57 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zGc-N5-QcX" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-996" y="117"/>
+            <point key="canvasLocation" x="-3234" y="1236"/>
+        </scene>
+        <!--Pie-->
+        <scene sceneID="tx9-pJ-8Hn">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="4Sr-W6-oKO" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Pie" image="pie-chart_25" selectedImage="pie-chart_25" id="sLQ-3u-DDU"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="L5a-45-7iJ">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="AsW-8K-cE4" kind="relationship" relationship="rootViewController" id="b9f-cZ-EAI"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="Bh4-fK-UOY" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1743.2" y="-282.00899550224892"/>
+        </scene>
+        <!--Line-->
+        <scene sceneID="EBu-uF-1fA">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="n6H-9y-rWQ" sceneMemberID="viewController">
+                    <tabBarItem key="tabBarItem" title="Line" image="line-chart_25" selectedImage="line-chart_25" id="Gml-jn-uVS"/>
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="aL4-Z4-aJi">
+                        <rect key="frame" x="0.0" y="20" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="hr5-8J-z6Z" kind="relationship" relationship="rootViewController" id="47w-fb-eOP"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="zCX-4Z-wZX" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1743" y="381"/>
         </scene>
     </scenes>
     <resources>
         <image name="BarChart" width="512" height="512"/>
         <image name="Green_check_mark_2" width="30" height="30"/>
+        <image name="line-chart_25" width="25" height="25"/>
+        <image name="pie-chart_25" width="25" height="25"/>
         <image name="plus_button" width="612" height="612"/>
     </resources>
+    <inferredMetricsTieBreakers>
+        <segue reference="aoH-Z3-USq"/>
+        <segue reference="fem-wf-6Sn"/>
+        <segue reference="VYw-8F-Oc9"/>
+    </inferredMetricsTieBreakers>
 </document>

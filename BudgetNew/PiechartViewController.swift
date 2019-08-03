@@ -33,6 +33,7 @@ class PiechartViewController: UIViewController, UIPickerViewDelegate, UIPickerVi
     let dropdownArrow = UIImage(named: "DropdownSymbol_20px")
     override func viewDidAppear(_ animated: Bool) {
         self.navigationController?.isToolbarHidden = true
+        self.tabBarController?.tabBar.isHidden = false
         self.updateChart()
         self.updateLabel()
     }

@@ -19,6 +19,11 @@ class AllSubBudgetsViewController: UIViewController, UITableViewDelegate, UITabl
     @IBOutlet var tableView: UITableView!
     var budget = Budget(budgetName: "", keyID: "", moneyLeft: 0, moneyTotal: 0)
     var subBudgets = [SubBudget]()
+    
+    override func viewDidAppear(_ animated: Bool) {
+        
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let settings = db.settings
@@ -175,6 +180,8 @@ class AllSubBudgetsViewController: UIViewController, UITableViewDelegate, UITabl
                 self.tableView.reloadData()
             }
         }
+        let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
+        tableView.addGestureRecognizer(longPressRecognizer)
     }
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -240,7 +247,12 @@ class AllSubBudgetsViewController: UIViewController, UITableViewDelegate, UITabl
         tableView.deselectRow(at: indexPath, animated: true)
     }
     func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
-        return true
+        if(indexPath.section == 1){
+            return true
+        }
+        else{
+            return false
+        }
     }
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if(indexPath.section == 1){
@@ -276,8 +288,8 @@ class AllSubBudgetsViewController: UIViewController, UITableViewDelegate, UITabl
         if guesture.state == UIGestureRecognizer.State.began {
             let point = guesture.location(in: tableView)
             let indexPath = tableView.indexPathForRow(at: point)
-            if(indexPath != nil && indexPath?.section == 1 && indexPath?.row == 2){
-                let editInfo = UIAlertController(title: nil, message: "Detaljer", preferredStyle: UIAlertController.Style.alert)
+            if(indexPath != nil && indexPath?.section == 0 && indexPath?.row == 2){
+                let editInfo = UIAlertController(title: "Total", message: "Skriv nyt total beløb", preferredStyle: UIAlertController.Style.alert)
                 let cancelAction = UIAlertAction(title: "Cancel", style: .destructive, handler: { (action) -> Void in
                     
                 })
@@ -289,9 +301,12 @@ class AllSubBudgetsViewController: UIViewController, UITableViewDelegate, UITabl
                     }
                 })
                 editInfo.addTextField { (textField0) in
-                    textField0.text = "\(self.budget.getMoneyTotal() - self.budget.getMoneyLeft())"
+                    textField0.text = "\(self.budget.getMoneyTotal())"
                     textField0.keyboardType = .numberPad
                 }
+                editInfo.addAction(cancelAction)
+                editInfo.addAction(saveAction)
+                self.present(editInfo, animated: true, completion: nil)
             }
         }
     }

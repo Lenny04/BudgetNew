@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		1415BA98227AF7E800529372 /* DownTopSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1415BA97227AF7E800529372 /* DownTopSegue.swift */; };
 		1442703821D5296300AE886C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1442703721D5296300AE886C /* AppDelegate.swift */; };
-		1442703A21D5296300AE886C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1442703921D5296300AE886C /* ViewController.swift */; };
+		1442703A21D5296300AE886C /* PiechartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1442703921D5296300AE886C /* PiechartViewController.swift */; };
 		1442703D21D5296300AE886C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1442703B21D5296300AE886C /* Main.storyboard */; };
 		1442703F21D5296300AE886C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1442703E21D5296300AE886C /* Assets.xcassets */; };
 		1442704221D5296300AE886C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 1442704021D5296300AE886C /* LaunchScreen.storyboard */; };
@@ -20,6 +20,7 @@
 		14776CE1222E9A51006CDBC7 /* AllSubBudgetsViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14776CE0222E9A51006CDBC7 /* AllSubBudgetsViewcontroller.swift */; };
 		14776CE3222F1AF9006CDBC7 /* Cell2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14776CE2222F1AF9006CDBC7 /* Cell2.swift */; };
 		149247EA22121F500058F195 /* SubBudgetsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 149247E922121F500058F195 /* SubBudgetsViewController.swift */; };
+		14995CBE22E7BC9100ECE535 /* BarChartViewcontroller.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14995CBD22E7BC9100ECE535 /* BarChartViewcontroller.swift */; };
 		14B55E6821D63EF800C8941C /* Budget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B55E6721D63EF800C8941C /* Budget.swift */; };
 		14B55E6A21D68B5A00C8941C /* SubBudget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B55E6921D68B5A00C8941C /* SubBudget.swift */; };
 		14B55E6C21D6997F00C8941C /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 14B55E6B21D6997F00C8941C /* Expense.swift */; };
@@ -50,7 +51,7 @@
 		1415BA97227AF7E800529372 /* DownTopSegue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DownTopSegue.swift; sourceTree = "<group>"; };
 		1442703421D5296300AE886C /* BudgetNew.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BudgetNew.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1442703721D5296300AE886C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		1442703921D5296300AE886C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		1442703921D5296300AE886C /* PiechartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PiechartViewController.swift; sourceTree = "<group>"; };
 		1442703C21D5296300AE886C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		1442703E21D5296300AE886C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		1442704121D5296300AE886C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -66,6 +67,7 @@
 		14776CE0222E9A51006CDBC7 /* AllSubBudgetsViewcontroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllSubBudgetsViewcontroller.swift; sourceTree = "<group>"; };
 		14776CE2222F1AF9006CDBC7 /* Cell2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Cell2.swift; sourceTree = "<group>"; };
 		149247E922121F500058F195 /* SubBudgetsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubBudgetsViewController.swift; sourceTree = "<group>"; };
+		14995CBD22E7BC9100ECE535 /* BarChartViewcontroller.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarChartViewcontroller.swift; sourceTree = "<group>"; };
 		14B55E6721D63EF800C8941C /* Budget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Budget.swift; sourceTree = "<group>"; };
 		14B55E6921D68B5A00C8941C /* SubBudget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubBudget.swift; sourceTree = "<group>"; };
 		14B55E6B21D6997F00C8941C /* Expense.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Expense.swift; sourceTree = "<group>"; };
@@ -136,7 +138,7 @@
 			children = (
 				14776CE0222E9A51006CDBC7 /* AllSubBudgetsViewcontroller.swift */,
 				1442703721D5296300AE886C /* AppDelegate.swift */,
-				1442703921D5296300AE886C /* ViewController.swift */,
+				1442703921D5296300AE886C /* PiechartViewController.swift */,
 				14C37938220E312D0024CED3 /* TilføjUdgiftViewcontroller.swift */,
 				149247E922121F500058F195 /* SubBudgetsViewController.swift */,
 				1442703B21D5296300AE886C /* Main.storyboard */,
@@ -150,6 +152,7 @@
 				14776CE2222F1AF9006CDBC7 /* Cell2.swift */,
 				146C26AF223058980057EE62 /* Cell.swift */,
 				1415BA97227AF7E800529372 /* DownTopSegue.swift */,
+				14995CBD22E7BC9100ECE535 /* BarChartViewcontroller.swift */,
 			);
 			path = BudgetNew;
 			sourceTree = "<group>";
@@ -493,10 +496,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				14C37939220E312D0024CED3 /* TilføjUdgiftViewcontroller.swift in Sources */,
-				1442703A21D5296300AE886C /* ViewController.swift in Sources */,
+				1442703A21D5296300AE886C /* PiechartViewController.swift in Sources */,
 				1442703821D5296300AE886C /* AppDelegate.swift in Sources */,
 				1415BA98227AF7E800529372 /* DownTopSegue.swift in Sources */,
 				14B55E6821D63EF800C8941C /* Budget.swift in Sources */,
+				14995CBE22E7BC9100ECE535 /* BarChartViewcontroller.swift in Sources */,
 				14776CE1222E9A51006CDBC7 /* AllSubBudgetsViewcontroller.swift in Sources */,
 				14B55E6A21D68B5A00C8941C /* SubBudget.swift in Sources */,
 				14776CE3222F1AF9006CDBC7 /* Cell2.swift in Sources */,

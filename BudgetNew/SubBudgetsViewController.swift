@@ -31,6 +31,11 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
     var categoriesTextfield = UITextField(), dateTextfield = UITextField()
     let filter_off = UIImage(named: "Filter_off_30px"), filter_on = UIImage(named: "Filter_on_30px")
     var isSearching = false
+    
+    override func viewDidAppear(_ animated: Bool) {
+        self.navigationController?.isToolbarHidden = false
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         let settings = db.settings
@@ -195,12 +200,12 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
             }
         }
         tableView.reloadData()
+        self.navigationController?.isToolbarHidden = false
         let longPressRecognizer = UILongPressGestureRecognizer(target: self, action: #selector(longPress(_:)))
         tableView.addGestureRecognizer(longPressRecognizer)
         self.categoriesPickerView.reloadAllComponents()
         filterBarButtonItem = UIBarButtonItem(image: filter_off, style: .done, target: self, action: #selector(filter))
         //self.navigationItem.rightBarButtonItem  = filterBarButtonItem
-        self.navigationController?.isToolbarHidden = false
         toolbarButtons.append(filterBarButtonItem)
         toolbarButtons.append(flexSpace)
         toolbarButtons.append(UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addBudgetExpense)))
@@ -264,21 +269,9 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
         return 30
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        var name = ""
-        var amount = 0
-        var date = ""
+        var alertController = UIAlertController()
         if(indexPath.section == 1){
-            if(isSearching == true){
-                name = filteredExpenses[indexPath.row].getExpenseName()
-                amount = filteredExpenses[indexPath.row].getAmount()
-                date = filteredExpenses[indexPath.row].getDate()
-            }
-            else{
-                name = subBudgetExpenses[indexPath.row].getExpenseName()
-                amount = subBudgetExpenses[indexPath.row].getAmount()
-                date = subBudgetExpenses[indexPath.row].getDate()
-            }
-            let alertController = UIAlertController(title: "Info", message: "Udgift: \(name) \n Beløb: \(amount) kr. \n Dato: \(date)", preferredStyle: .alert)
+            alertController = isSearching ? UIAlertController(title: "Info", message: "Udgift: \(filteredExpenses[indexPath.row].getExpenseName()) \n Beløb: \(filteredExpenses[indexPath.row].getAmount()) kr. \n Dato: \(filteredExpenses[indexPath.row].getDate())", preferredStyle: .alert) : UIAlertController(title: "Info", message: "Udgift: \(subBudgetExpenses[indexPath.row].getExpenseName()) \n Beløb: \(subBudgetExpenses[indexPath.row].getAmount()) kr. \n Dato: \(subBudgetExpenses[indexPath.row].getDate())", preferredStyle: .alert)
             let defaultAction = UIAlertAction(title: "OK", style: .default, handler: nil)
             alertController.addAction(defaultAction)
             self.present(alertController, animated: true, completion: nil)
@@ -291,18 +284,25 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
     func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if(indexPath.section == 1){
             if editingStyle == .delete {
-                let currentKey = self.subBudgetExpenses[indexPath.row].getKeyID()
-                let updatedSpent = self.subBudget.getMoneySpent() - self.subBudgetExpenses[indexPath.row].getAmount()
-                let deletedExpenseAmount = self.subBudgetExpenses[indexPath.row].getAmount()
+                let currentKey = isSearching ? self.filteredExpenses[indexPath.row].getKeyID() : self.subBudgetExpenses[indexPath.row].getKeyID()
+                let amount = isSearching ? self.filteredExpenses[indexPath.row].getAmount() : self.subBudgetExpenses[indexPath.row].getAmount()
+                let updatedSpent = self.subBudget.getMoneySpent() - amount
+                let deletedExpenseAmount = isSearching ? self.filteredExpenses[indexPath.row].getAmount() : self.subBudgetExpenses[indexPath.row].getAmount()
                 self.db.collection("Budget/\(self.budget.getKeyID())/Expenses").document(currentKey).delete() { err in
-                    if let err = err {
+                    if err != nil {
                         //print("Error removing document: \(err)")
                     }
                     else {
                     self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").document(self.subBudget.getKeyID()).updateData(["Name" : self.subBudget.getSubBudgetName(), "Symbol" : self.subBudget.getSymbol(), "MoneyLeft" : self.subBudget.getMoneyLeft() + deletedExpenseAmount, "MoneySpent" : updatedSpent, "MoneyTotal" : self.subBudget.getMoneyTotal()])
                         let updatedLeftInBudget = self.budget.getMoneyLeft() + deletedExpenseAmount
                         self.db.collection("Budget").document(self.budget.getKeyID()).updateData(["Name" : self.budget.getBudgetName(), "MoneyLeft" : updatedLeftInBudget, "MoneyTotal" : self.budget.getMoneyTotal()])
-                        self.subBudgetExpenses.remove(at: indexPath.row)
+                        if self.isSearching {
+                            self.filteredExpenses.remove(at: indexPath.row)
+                        }
+                        else{
+                            self.subBudgetExpenses.remove(at: indexPath.row)
+                        }
+                        
                         self.tableView.deleteRows(at: [indexPath], with: .automatic)
                         tableView.reloadData()
                     }
@@ -370,15 +370,15 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
                 })
                 
                 editInfo.addTextField { (textField0) in
-                    textField0.text = String(self.subBudgetExpenses[(indexPath?.row)!].getExpenseName())
+                    textField0.text = self.isSearching ? String(self.filteredExpenses[(indexPath?.row)!].getExpenseName()) : String(self.subBudgetExpenses[(indexPath?.row)!].getExpenseName())
                     textField0.autocapitalizationType = .sentences
                 }
                 editInfo.addTextField { (textField1) in
-                    textField1.text = String(self.subBudgetExpenses[(indexPath?.row)!].getAmount())
+                    textField1.text = self.isSearching ? String(self.filteredExpenses[(indexPath?.row)!].getAmount()) : String(self.subBudgetExpenses[(indexPath?.row)!].getAmount())
                     textField1.keyboardType = .numberPad
                 }
                 editInfo.addTextField { (textField2) in
-                    textField2.text = String(self.subBudgetExpenses[(indexPath?.row)!].getDate())
+                    textField2.text = self.isSearching ? String(self.filteredExpenses[(indexPath?.row)!].getDate()) : String(self.subBudgetExpenses[(indexPath?.row)!].getDate())
                     textField2.inputView = self.datePicker
                     self.dateTextfield = textField2
                     let toolbar = UIToolbar()
@@ -391,11 +391,21 @@ class SubBudgetsViewController: UIViewController, UITableViewDelegate, UITableVi
                 }
                 editInfo.addTextField { (textField3) in
                     var index = 0
-                    for item in self.subBudgets{
-                        if(item.getSubBudgetName() == self.subBudgetExpenses[self.currentIndex].getSubBudgetKeyID()){
-                            index = self.subBudgets.firstIndex(where: {$0.getSubBudgetName() == item.getSubBudgetName()})!
+                    if(self.isSearching == true){
+                        for item in self.subBudgets{
+                            if(item.getKeyID() == self.filteredExpenses[self.currentIndex].getSubBudgetKeyID()){
+                                index = self.subBudgets.firstIndex(where: {$0.getSubBudgetName() == item.getSubBudgetName()})!
+                            }
                         }
                     }
+                    else{
+                        for item in self.subBudgets{
+                            if(item.getKeyID() == self.subBudgetExpenses[self.currentIndex].getSubBudgetKeyID()){
+                                index = self.subBudgets.firstIndex(where: {$0.getSubBudgetName() == item.getSubBudgetName()})!
+                            }
+                        }
+                    }
+                    
                     textField3.text = "\(self.subBudgets[index].getSymbol()) \(self.subBudgets[index].getSubBudgetName())"
                     textField3.inputView = self.categoriesPickerView
                     textField3.inputAccessoryView = self.categoriesToolBar
