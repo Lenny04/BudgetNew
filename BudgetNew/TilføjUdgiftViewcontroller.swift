@@ -24,7 +24,6 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
     let datePicker = UIDatePicker()
     var budget = Budget(budgetName: "", keyID: "", moneyLeft: 0, moneyTotal: 0)
     var subBudgets = [SubBudget]()
-    @IBOutlet weak var categoryButton: UIButton!
     var currentIndex = 0
     var isEmoji = BooleanLiteralType()
     override func viewDidAppear(_ animated: Bool) {
@@ -47,7 +46,6 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
         UIGraphicsEndImageContext()
         self.view.backgroundColor = UIColor(patternImage: image)
         amountText.keyboardType = UIKeyboardType.numberPad
-        
         self.quoteListenerSubBudget = self.db.collection("Budget/\(self.budget.getKeyID())/SubBudgets").addSnapshotListener { (querySnapshot, err) in
             if err != nil {
                 //print("Error getting documents: \(err)")
@@ -137,6 +135,8 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
         //nameText.becomeFirstResponder()
         let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(TilføjUdgiftViewcontroller.dismissKeyboard))
         view.addGestureRecognizer(tap)
+        self.navigationItem.rightBarButtonItem?.isEnabled = false
+        amountText.addTarget(self, action: #selector(TilføjUdgiftViewcontroller.amountValueDidChange), for: .editingChanged)
     }
     
     
@@ -301,6 +301,9 @@ class TilføjUdgiftViewcontroller: UIViewController, UIPickerViewDelegate, UIPic
 //        }
         let submitAction = alertController?.actions[0]
         submitAction?.isEnabled = emoji.containsEmoji() && emoji.count == 1 && !(alertController?.textFields?[0].text!.isEmpty)!
+    }
+    @objc func amountValueDidChange(){
+        self.navigationItem.rightBarButtonItem?.isEnabled = !nameText.text!.isEmpty && !amountText.text!.isEmpty && !txtDatePicker.text!.isEmpty && categoryPicker.selectedRow(inComponent: 0) != categoryPicker.numberOfRows(inComponent: 0)
     }
 }
 
